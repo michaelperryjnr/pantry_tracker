@@ -16,7 +16,4 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "20"
-      - name: Got to the directory
-        run: cd ./inventory_management
-      - run: npm install
-      - run: npm run build
+      - run: cd ./inventory_management && npm install && npm run build
