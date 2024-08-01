@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Go to the directory
+        run: cd inventory-management
       - uses: actions/setup-node@v2
         with:
           node-version: "20"
