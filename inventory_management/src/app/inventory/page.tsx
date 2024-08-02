@@ -194,7 +194,7 @@ export default function InventoryWelcome() {
               <SearchIcon className="h-4 w-4 text-muted-foreground" />
               <CustomInputField
                 type="search"
-                placeholder="Item Name"
+                placeholder="Search item by name"
                 className="w-full bg-background shadow-none appearance-none md:w-2/3 lg:w-1/3"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
