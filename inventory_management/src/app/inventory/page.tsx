@@ -2,6 +2,8 @@
 import React, {
   useState,
   useEffect,
+  useMemo,
+  useCallback,
   ChangeEventHandler,
   ChangeEvent,
 } from "react";
@@ -47,6 +49,27 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const CustomInputField = styled(TextField)(({ theme }) => ({
+  "& .MuiInputBase-input": {
+    color: "white",
+  },
+  "& .MuiInputLabel-root": {
+    color: "gray",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "white",
+  },
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "transparent",
+    },
+    "&.Mui-focused": {
+      outline: "none",
+      boxShadow: "none",
+    },
+  },
+}));
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -72,15 +95,26 @@ export default function InventoryWelcome() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const updateInventory = async () => {
+  const updateInventory = useCallback(async () => {
     const snapshot = query(collection(db, "inventory"));
     const docs = await getDocs(snapshot);
-    const inventoryList: any = [];
+    let inventoryList: any = [];
     docs.forEach((doc) => {
       inventoryList.push({ ...doc.data() });
     });
+
+    if (searchTerm) {
+      inventoryList = inventoryList.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setInventory(inventoryList);
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    updateInventory();
+  }, [updateInventory]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -134,23 +168,43 @@ export default function InventoryWelcome() {
     }
   };
 
+  const filteredProducts = useMemo(() => {
+    const filtered = inventory.filter((item) => {
+      if (
+        searchTerm &&
+        !item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
+    });
+    console.log(filtered);
+    return filtered;
+  }, [searchTerm, inventory]);
+
   useEffect(() => {
     updateInventory();
-  }, []);
+  }, [updateInventory]);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-muted/40">
       <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-muted/40 px-6">
-        <div className="w-full flex-1">
+        <div className="w-full">
           <form>
-            <div className="relative">
-              <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <TextField
+            <div className="flex flex-row items-center">
+              <SearchIcon className="h-4 w-4 text-muted-foreground" />
+              <CustomInputField
                 type="search"
-                placeholder="Search products..."
-                className="w-full bg-background shadow-none appearance-none pl-8 md:w-2/3 lg:w-1/3"
+                placeholder="Item Name"
+                className="w-full bg-background shadow-none appearance-none md:w-2/3 lg:w-1/3"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                InputLabelProps={{
+                  style: { color: "gray" },
+                }}
+                InputProps={{
+                  style: { color: "white" },
+                }}
               />
             </div>
           </form>
