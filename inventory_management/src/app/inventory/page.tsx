@@ -86,7 +86,7 @@ const style = {
 };
 
 export default function InventoryWelcome() {
-  const [inventory, setInventory] = useState([]);
+  const [inventory, setInventory] = useState<IInventory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState({ name: "", quantity: "" });
@@ -104,7 +104,7 @@ export default function InventoryWelcome() {
     });
 
     if (searchTerm) {
-      inventoryList = inventoryList.filter((item) =>
+      inventoryList = inventoryList.filter((item: IInventory) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
