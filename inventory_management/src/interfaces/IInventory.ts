@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 interface IInventory {
-  itemId: string;
+  id: string;
   name: string;
   quantity: number;
   dateAdded: Timestamp;
