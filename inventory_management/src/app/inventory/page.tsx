@@ -178,7 +178,6 @@ export default function InventoryWelcome() {
       }
       return true;
     });
-    console.log(filtered);
     return filtered;
   }, [searchTerm, inventory]);
 
